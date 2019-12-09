@@ -2,12 +2,12 @@
 -- don't worry about months with no sales.
 
 SELECT
-    to_char(order_date, 'Month') AS month,
+    to_char(order_date, 'YYYY-Month') AS year_month,
     SUM(unit_price * quantity * (1-discount)) || ' $' AS tot_sales,
     COUNT(DISTINCT order_id) AS tot_orders
 FROM orders
 JOIN order_details USING(order_id)
-GROUP BY month
+GROUP BY year_month
 ORDER BY tot_sales;
 
 
@@ -26,6 +26,7 @@ WITH month_sales AS(
     ORDER BY tot_sales
 ) SELECT
         month,
-        tot_sales / tot_orders || ' $' AS avg_sales
+        AVG(tot_sales) || ' $' AS avg_sales
     FROM month_sales
+    GROUP BY month
     ORDER BY avg_sales DESC;
